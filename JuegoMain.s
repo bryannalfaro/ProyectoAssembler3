@@ -25,6 +25,8 @@ ingresoOpcion: .asciz "%c"
 opcionElegida: .asciz " "
 errorMessage: .asciz "Error caracter invalido"
 juegoI: .asciz "Entraste al juego"
+
+
 /*---------------------------------------------------------*/
 
 
