@@ -40,6 +40,7 @@ main:
 	/* valor1 */
 
 inicio:
+/*-----CARGGA DEL ASCII DIBUJO--------------*/
 	ldr r0, =primeraParte
 	bl puts
 	ldr r0, =primeraParte1
@@ -48,7 +49,8 @@ inicio:
 	bl puts
 	ldr r0, =primeraParte3
 	bl puts
-
+	
+/*------CARGA DEL CUADRO INICIAL DEL JUEGO-----*/
 	ldr r0, =f1
 	bl puts
 	ldr r0, =f2
@@ -61,6 +63,7 @@ inicio:
 	bl puts
 	ldr r0, =f6
 	bl puts
+/*-------------------------------------------------*/
 
 	ldr r0, =ingresoOpcion
 	ldr r1, =opcionElegida
@@ -84,8 +87,6 @@ error:
 juego:
 	ldr r0, =juegoI
 	bl puts
-
-	
 
  
 /*aqui debe de ir otro ascii para hacer el espacio del juego */
