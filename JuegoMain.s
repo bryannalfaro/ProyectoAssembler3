@@ -16,7 +16,12 @@ primeraParte3: .asciz "   (____)    (__) (__/  (__)  (____)"
 
 bienvenida: .asciz "Bienvenido"
 
-
+f1: .asciz "_______________________________________________________________________________ "
+f2: .asciz "|                                                                              |"
+f3: .asciz "|  Debes Destruir las palabras completándolas.                                 |"  
+f4: .asciz "|  Selecciona el orden de la palabra seguido de sus caracteres faltantes: 1ER  |" 
+f5: .asciz "|  Listo para jugar?(Y/N)                                                      |"
+f6: .asciz "_______________________________________________________________________________|"
 
 
 /*---------------------------------------------------------*/
@@ -40,6 +45,19 @@ bl puts
 ldr r0, =primeraParte2
 bl puts
 ldr r0, =primeraParte3
+bl puts
+
+ldr r0, =f1
+bl puts
+ldr r0, =f2
+bl puts
+ldr r0, =f3
+bl puts
+ldr r0, =f4
+bl puts
+ldr r0, =f5
+bl puts
+ldr r0, =f6
 bl puts
 
 /*aqui debe de ir otro ascii para hacer el espacio del juego */
