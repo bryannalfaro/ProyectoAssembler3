@@ -26,12 +26,20 @@ opcionElegida: .asciz " "
 errorMessage: .asciz "Error caracter invalido"
 juegoI: .asciz "Entraste al juego"
 
+bancoPalabras: .asciz "pel?ta", "c?rros", "tom?te", "alt?ra", "p?erta" @palabras del juego
+bancoCorrecto: .asciz "pelota", "carros", "tomate", "altura", "puerta" @palabras correctas
+formato: .asciz "%s\n"
+
+eleccion: .asciz "%s"
+formatoChar: .asciz "%c\n"
+opcion: .asciz "  "
+mul: .asciz "%d"
 
 /*---------------------------------------------------------*/
 
 
 .text
-.align 2
+.align 4
 .global main
 .type main,%function
 
@@ -79,6 +87,7 @@ inicio:
 	cmp r1, #'N'
 	beq salida
 	b error
+	
 
 
 error:
@@ -87,9 +96,33 @@ error:
 	b inicio
 	
 juego:
+
 	ldr r0, =juegoI
 	bl puts
-
+	
+	@Mostrar palabra inicial
+	ldr r5, =bancoPalabras
+	ldr r0, =formato
+	mov r1, r5
+	bl printf
+	
+	@Pedir al usuario su eleccion
+	ldr r0, =eleccion
+	ldr r1, =opcion
+	bl scanf
+	
+	@Prueba de desgloce de ingreso de usuario
+	ldr r0, =formatoChar
+	ldr r1, =opcion
+	ldrb r1, [r1]
+	bl printf
+	
+	
+	ldr r0, =formatoChar
+	ldr r3, =opcion
+	ldrb r1, [r3, #1]
+	bl printf
+	
  
 /*aqui debe de ir otro ascii para hacer el espacio del juego */
 
