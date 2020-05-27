@@ -33,7 +33,7 @@ formato: .asciz "%s\n"
 eleccion: .asciz "%s"
 formatoChar: .asciz "%c\n"
 opcion: .asciz "  "
-mul: .asciz "%d"
+mul: .asciz "%d\n"
 
 /*---------------------------------------------------------*/
 
@@ -117,6 +117,11 @@ juego:
 	ldrb r1, [r1]
 	bl printf
 	
+	ldr r0, =mul
+	ldr r1, =opcion
+	ldrb r1, [r1]
+	mul r1, r1, r1
+	bl printf
 	
 	ldr r0, =formatoChar
 	ldr r3, =opcion
