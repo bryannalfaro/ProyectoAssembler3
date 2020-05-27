@@ -27,12 +27,13 @@ errorMessage: .asciz "Error caracter invalido"
 juegoI: .asciz "Entraste al juego"
 
 bancoPalabras: .asciz "pel?ta", "c?rros", "tom?te", "alt?ra", "p?erta" @palabras del juego
-bancoCorrecto: .asciz "pelota", "carros", "tomate", "altura", "puerta" @palabras correctas
+bancoCorrecto: .asciz "o", "a", "a", "u", "u" @caracteres correctos
 formato: .asciz "%s\n"
 
 eleccion: .asciz "%s"
 formatoChar: .asciz "%c\n"
 opcion: .asciz "  "
+numero: .word 0
 mul: .asciz "%d\n"
 
 /*---------------------------------------------------------*/
@@ -115,12 +116,6 @@ juego:
 	ldr r0, =formatoChar
 	ldr r1, =opcion
 	ldrb r1, [r1]
-	bl printf
-	
-	ldr r0, =mul
-	ldr r1, =opcion
-	ldrb r1, [r1]
-	mul r1, r1, r1
 	bl printf
 	
 	ldr r0, =formatoChar
