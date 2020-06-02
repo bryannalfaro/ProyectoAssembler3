@@ -25,16 +25,17 @@ ingresoOpcion: .asciz "%c"
 opcionElegida: .asciz " "
 errorMessage: .asciz "Error caracter invalido"
 juegoI: .asciz "Entraste al juego"
-
-bancoPalabras: .asciz "pel?ta", "c?rros", "tom?te", "alt?ra", "p?erta" @palabras del juego
-bancoCorrecto: .asciz "o", "a", "a", "u", "u" @caracteres correctos
+correctoM: .asciz  "CORRECTO"
+incorrectoM: .asciz  "INCORRECTO"
+bancoPalabras: .asciz "pel?ta", "c?rros", "tomat?", "?guana", "p?erta" @palabras del juego
+bancoCorrecto: .asciz "o", "a", "e", "i", "u" @caracteres correctos
 formato: .asciz "%s\n"
 
 eleccion: .asciz "%s"
 formatoChar: .asciz "%c\n"
 opcion: .asciz "  "
 numero: .word 0
-mul: .asciz "%d\n"
+mult: .asciz "%d\n"
 
 /*---------------------------------------------------------*/
 
@@ -97,6 +98,7 @@ error:
 	b inicio
 	
 juego:
+	mov r2, #0
 
 	ldr r0, =juegoI
 	bl puts
@@ -112,16 +114,41 @@ juego:
 	ldr r1, =opcion
 	bl scanf
 	
-	@Prueba de desgloce de ingreso de usuario
+	@Prueba de desgloce de ingreso de usuario numero
 	ldr r0, =formatoChar
 	ldr r1, =opcion
 	ldrb r1, [r1]
-	bl printf
+	sub r1, r1, #48 @entero
+	sub r2, r1, #1 @copiar para no perder referencia
 	
-	ldr r0, =formatoChar
+	
+	ldr r0, =formatoChar @letra ingresada
 	ldr r3, =opcion
 	ldrb r1, [r3, #1]
-	bl printf
+	mov r7, #2
+	mul r2, r2, r7
+	
+	ldr r6, =bancoCorrecto
+	ldrb r6, [r6, r2] @Colocando en la letra de acuerdo al numero ingresado
+	
+	cmp r6, r1
+	
+	beq correcto
+	bne incorrecto
+	
+	correcto:
+	 ldr r0, =correctoM
+	 bl puts
+	 b salida
+	
+	
+	incorrecto:
+	 ldr r0, =incorrectoM
+	 bl puts
+	 b salida
+	
+	
+	
 	
  
 /*aqui debe de ir otro ascii para hacer el espacio del juego */
