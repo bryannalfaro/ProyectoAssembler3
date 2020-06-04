@@ -147,9 +147,9 @@ juego2:
 	bne incorrecto
 	
 correcto:
-	 ldr r0, =correctoM
-	 bl puts
-	 bl limpiezaArreglo
+	ldr r0, =correctoM
+	bl puts
+	bl limpiezaArreglo
 	@ldr r5, =puntos
 	@ldr r5, [r5]
 	@add r5, r5, #1
@@ -157,21 +157,21 @@ correcto:
 	@beq salidaGano
 	@mov r12, r5
 	@str r12, [r5]
-	 ldr r5, =bancoPalabras
-	 bl impresionPalabra
-	 ldr r0, =espacio
-	 bl puts
-	 mov r10, #1
-	 mov r11, #0
-	 b juego2	
+	ldr r5, =bancoPalabras
+	mov r10, #1
+	bl impresionPalabra
+	ldr r0, =espacio
+	bl puts
+	mov r11, #0
+	b juego2	
 	
 incorrecto:
 	
 	ldr r0, =incorrectoM
 	bl puts
 	add r10, #1
-	@cmp r10, #5 @Comprobacion para prevenir loop infinito
-	@bgt salidaPerdio
+	cmp r10, #5 @Comprobacion para prevenir loop infinito
+	bgt salidaPerdio
 	ldr r5, =bancoPalabras
 	bl impresionPalabra
 	ldr r0, =espacio
@@ -235,21 +235,15 @@ ciclo:
 
 salidaPerdio:
 	ldr r0, =perder
-	 bl puts
+	bl puts
 	/* salida correcta */
-	mov r0, #0
-	mov r3, #0
-	ldmfd sp!, {lr}	/* R13 = SP */
-	bx lr
+	b salida
 
 salidaGano:
 	ldr r0, =ganar
 	bl puts
 	/* salida correcta */
-	mov r0, #0
-	mov r3, #0
-	ldmfd sp!, {lr}	/* R13 = SP */
-	bx lr
+	b salida
 	
 salida:
 	/* salida correcta */
