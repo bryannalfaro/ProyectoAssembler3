@@ -39,6 +39,7 @@ numero: .word 0
 mult: .asciz "%d\n"
 mult2: .asciz "%d-"
 espacio: .asciz "\n"
+espacioVacio: .asciz "      "
 mult3: .word 0
 
 /*---------------------------------------------------------*/
@@ -127,7 +128,7 @@ juego:
 	ldrb r1, [r1]
 	sub r1, r1, #48 @entero
 	sub r2, r1, #1 @copiar para no perder referencia
-	
+	mov r8, r2
 	
 	ldr r0, =formatoChar @letra ingresada
 	ldr r3, =opcion
@@ -146,10 +147,14 @@ juego:
 	correcto:
 	 ldr r0, =correctoM
 	 bl puts
-	 
 	 bl limpiezaArreglo
-	 
-	 
+	 ldr r5, =bancoPalabras
+	 bl impresionPalabra
+	 ldr r0, =espacio
+	 bl puts
+	 mov r11, #0
+	 b juego2
+
 	 b salida
 	
 	
@@ -175,16 +180,23 @@ juego:
 impresionPalabra:
 	push {lr}
 	
+	ldr r1, [r5]
+	add r5, r5, #7
+	ldr r4, =espacioVacio
+	ldr r4, [r4]
+	cmp r1, r4
 	add r11, r11, #1 @bandera del turno
-	
+	beq impresionPalabra
+	sub r11, r11, #1
+	add r11, r11, #1 @bandera del turno
+	sub r5, r5, #7
+
 	ldr r0, =mult2 @carga formato
 	mov r1, r11
 	bl printf
-	
-	
+		
 	mov r1, r5   @moverse dentro del arreglo
 	add r5, r5, #7
-	
 	ldr r0, =eleccion2
 	
 	bl printf
@@ -197,8 +209,18 @@ impresionPalabra:
 
 limpiezaArreglo:
 	push {lr}
-	
-	
+	mov r9, #7
+	mul r8, r8, r9
+	ldr r9, =bancoPalabras
+	add r9, r8
+	mov r8, #6
+	mov r12, #' '
+ciclo:
+	mov r0, #0
+	strb r12, [r9], #1
+	sub r8, r8, #1
+	cmp r8, r0
+	bne ciclo
 	pop {lr}
 	mov pc, lr
 
