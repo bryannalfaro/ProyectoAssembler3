@@ -60,7 +60,7 @@ main:
 inicio:
 	mov r10, #1
 	mov r11, #0
-	mov r9, #4
+	mov r9, #0
 	mov r12, #0
 	mov r4, #1
 /*-----CARGGA DEL ASCII DIBUJO--------------*/
@@ -149,6 +149,7 @@ juego2:
 	bne incorrecto
 	
 correcto:
+
 	ldr r0, =correctoM
 	bl puts
 	bl limpiezaArreglo
@@ -185,6 +186,9 @@ incorrecto:
 impresionPalabraC:
 	push {lr}
 	
+	cmp r9, #5
+	beq juego2
+	add r9, #1
 	cmp r4, r11 
 	bne palabras
 	beq juego2
