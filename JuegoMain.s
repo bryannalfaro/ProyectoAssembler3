@@ -149,7 +149,7 @@ juego2:
 	bne incorrecto
 	
 correcto:
-
+	mov r9, #0
 	ldr r0, =correctoM
 	bl puts
 	bl limpiezaArreglo
@@ -166,6 +166,8 @@ correcto:
 	ldr r0, =espacio
 	bl puts
 	mov r11, #0
+	cmp r9, #5
+	bge salidaGano
 	b juego2
 
 incorrecto:
@@ -180,19 +182,21 @@ incorrecto:
 	bl impresionPalabraI
 	ldr r0, =espacio
 	bl puts
-	cmp r9, #6
+	cmp r9, #5
 	bge salidaPerdio
 	mov r11, #0
 	b juego2
  
 impresionPalabraC:
 	push {lr}
-
+	cmp r9, #5
+	bge outC
 	cmp r4, r11 
 	bne palabras
 	beq juego2
 
 palabras:
+	add r9, #1
 	ldr r1, [r5]
 	add r5, r5, #7
 	ldr r12, =espacioVacio
@@ -205,6 +209,7 @@ palabras:
 	sub r4, #1
 	add r11, r11, #1 @bandera del turno
 	sub r5, r5, #7
+	sub r9, #1
 
 	ldr r0, =mult2 @carga formato
 	mov r1, r11
@@ -217,6 +222,7 @@ palabras:
 	bl printf
 	cmp r4, r11 
 	bne impresionPalabraC
+outC:
 	pop {lr}
 	mov pc, lr
 
