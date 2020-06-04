@@ -161,10 +161,11 @@ correcto:
 	@str r12, [r5]
 	ldr r5, =bancoPalabras
 	bl operar
-	bl impresionPalabra
+	bl impresionPalabraC
 	ldr r0, =espacio
 	bl puts
 	mov r11, #0
+	mov r4, #1
 	b juego2
 
 incorrecto:
@@ -176,13 +177,13 @@ incorrecto:
 	bgt salidaPerdio
 	ldr r5, =bancoPalabras
 	bl operar
-	bl impresionPalabra
+	bl impresionPalabraI
 	ldr r0, =espacio
 	bl puts
 	mov r11, #0
 	b juego2
  
-impresionPalabra:
+impresionPalabraC:
 	push {lr}
 	
 	sub r12, r10, r11
@@ -197,7 +198,7 @@ impresionPalabra:
 	add r10, #1
 	add r4, #1
 	cmp r1, r12
-	beq impresionPalabra
+	beq impresionPalabraC
 	sub r11, r11, #1
 	sub r10, r10, #1
 	sub r4, #1
@@ -213,9 +214,27 @@ impresionPalabra:
 	ldr r0, =eleccion2
 	
 	bl printf
+	cmp r4, r11 
+	bne impresionPalabraC
+	pop {lr}
+	mov pc, lr
+
+impresionPalabraI:
+	push {lr}
+	
+	add r11, r11, #1 @bandera del turno
+	ldr r0, =mult2 @carga formato
+	mov r1, r11
+	bl printf
+		
+	mov r1, r5   @moverse dentro del arreglo
+	add r5, r5, #7
+	ldr r0, =eleccion2
+	
+	bl printf
 	sub r12, r10, r11
 	cmp r12, #1
-	bge impresionPalabra
+	bge impresionPalabraI
 	pop {lr}
 	mov pc, lr
 
