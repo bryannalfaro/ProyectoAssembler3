@@ -29,17 +29,18 @@ correctoM: .asciz  "CORRECTO"
 incorrectoM: .asciz  "INCORRECTO"
 bancoPalabras: .asciz "pel?ta", "c?rros", "tomat?", "?guana", "p?erta" @palabras del juego
 bancoCorrecto: .asciz "o", "a", "e", "i", "u" @caracteres correctos
-formato: .asciz "%s\n"
+formato: .asciz "1-%s\n"
 
 eleccion: .asciz "%s"
+eleccion2: .asciz "%s\t"
 formatoChar: .asciz "%c\n"
 opcion: .asciz "  "
 numero: .word 0
 mult: .asciz "%d\n"
+mult2: .asciz "%d-"
+mult3: .word 0
 
 /*---------------------------------------------------------*/
-
-
 .text
 .align 4
 .global main
@@ -52,6 +53,10 @@ main:
 	/* valor1 */
 
 inicio:
+	mov r10, #3
+	mov r11, #0
+	mov r9, #4
+	mov r12, #0
 /*-----CARGGA DEL ASCII DIBUJO--------------*/
 	ldr r0, =primeraParte
 	bl puts
@@ -90,8 +95,6 @@ inicio:
 	beq salida
 	b error
 	
-
-
 error:
 	ldr r0, =errorMessage
 	bl puts
@@ -145,14 +148,36 @@ juego:
 	incorrecto:
 	 ldr r0, =incorrectoM
 	 bl puts
+	 
+	 ldr r5, =bancoPalabras
+	 bl impresionPalabra
+	 
 	 b salida
-	
-	
-	
-	
- 
-/*aqui debe de ir otro ascii para hacer el espacio del juego */
 
+/*aqui debe de ir otro ascii para hacer el espacio del juego */
+ 
+impresionPalabra:
+	push {lr}
+	
+	add r11, r11, #1
+	
+	ldr r0, =mult2
+	mov r1, r11
+	bl printf
+	
+	
+	mov r1, r5
+	add r5, r5, #7
+	
+	ldr r0, =eleccion2
+	
+	bl printf
+	
+	cmp r10, r11
+	bne impresionPalabra
+	
+	pop {lr}
+	mov pc, lr
  
 salida:
 	
