@@ -17,7 +17,7 @@ primeraParte3: .asciz "   (____)    (__) (__/  (__)  (____)"
 f1: .asciz "_______________________________________________________________________________ "
 f2: .asciz "|                                                                              |"
 f3: .asciz "|  Debes Destruir las palabras completándolas.                                 |"  
-f4: .asciz "|  Selecciona el orden de la palabra seguido de sus caracteres faltantes: 1ER  |" 
+f4: .asciz "|  Selecciona el orden de la palabra seguido de sus caracteres faltantes: 1E  |" 
 f5: .asciz "|  Listo para jugar?(Y/N)                                                      |"
 f6: .asciz "_______________________________________________________________________________|"
 
@@ -27,6 +27,8 @@ errorMessage: .asciz "Error caracter invalido"
 juegoI: .asciz "Entraste al juego"
 correctoM: .asciz  "CORRECTO"
 incorrectoM: .asciz  "INCORRECTO"
+perder: .asciz  "HAS PERDIDO"
+ganar: .asciz  "HAS GANADO"
 bancoPalabras: .asciz "pel?ta", "c?rros", "tomat?", "?guana", "p?erta" @palabras del juego
 bancoCorrecto: .asciz "o", "a", "e", "i", "u" @caracteres correctos
 formato: .asciz "1-%s\n"
@@ -40,7 +42,7 @@ mult: .asciz "%d\n"
 mult2: .asciz "%d-"
 espacio: .asciz "\n"
 espacioVacio: .asciz "      "
-mult3: .word 0
+puntos: .word 0
 
 /*---------------------------------------------------------*/
 .text
@@ -116,7 +118,7 @@ juego:
 	
 	b juego2
 	
-	juego2: 
+juego2: 
 	@Pedir al usuario su eleccion
 	ldr r0, =eleccion
 	ldr r1, =opcion
@@ -144,50 +146,56 @@ juego:
 	beq correcto
 	bne incorrecto
 	
-	correcto:
+correcto:
 	 ldr r0, =correctoM
 	 bl puts
 	 bl limpiezaArreglo
+	@ldr r5, =puntos
+	@ldr r5, [r5]
+	@add r5, r5, #1
+	@cmp r1, #5
+	@beq salidaGano
+	@mov r12, r5
+	@str r12, [r5]
 	 ldr r5, =bancoPalabras
 	 bl impresionPalabra
 	 ldr r0, =espacio
 	 bl puts
+	 mov r10, #1
 	 mov r11, #0
-	 b juego2
-
-	 b salida
+	 b juego2	
 	
+incorrecto:
 	
-	incorrecto:
-	
-	 ldr r0, =incorrectoM
-	 bl puts
-	 add r10, #1
-	 
-	 cmp r10, #5 @Comprobacion para prevenir loop infinito
-	 bgt salida
-	 
-	 ldr r5, =bancoPalabras
-	 bl impresionPalabra
-	 ldr r0, =espacio
-	 bl puts
-	 mov r11, #0
-	 b juego2
-
-
-	 b salida
+	ldr r0, =incorrectoM
+	bl puts
+	add r10, #1
+	@cmp r10, #5 @Comprobacion para prevenir loop infinito
+	@bgt salidaPerdio
+	ldr r5, =bancoPalabras
+	bl impresionPalabra
+	ldr r0, =espacio
+	bl puts
+	mov r11, #0
+	b juego2
  
 impresionPalabra:
 	push {lr}
 	
+	sub r12, r10, r11
+	cmp r12, #1
+	blt juego2
+
 	ldr r1, [r5]
 	add r5, r5, #7
 	ldr r4, =espacioVacio
 	ldr r4, [r4]
-	cmp r1, r4
 	add r11, r11, #1 @bandera del turno
+	add r10, #1
+	cmp r1, r4
 	beq impresionPalabra
 	sub r11, r11, #1
+	sub r10, r10, #1
 	add r11, r11, #1 @bandera del turno
 	sub r5, r5, #7
 
@@ -201,8 +209,9 @@ impresionPalabra:
 	
 	bl printf
 	
-	cmp r10, r11
-	bne impresionPalabra
+	sub r12, r10, r11
+	cmp r12, #1
+	bge impresionPalabra
 	
 	pop {lr}
 	mov pc, lr
@@ -224,8 +233,25 @@ ciclo:
 	pop {lr}
 	mov pc, lr
 
-salida:
+salidaPerdio:
+	ldr r0, =perder
+	 bl puts
+	/* salida correcta */
+	mov r0, #0
+	mov r3, #0
+	ldmfd sp!, {lr}	/* R13 = SP */
+	bx lr
+
+salidaGano:
+	ldr r0, =ganar
+	bl puts
+	/* salida correcta */
+	mov r0, #0
+	mov r3, #0
+	ldmfd sp!, {lr}	/* R13 = SP */
+	bx lr
 	
+salida:
 	/* salida correcta */
 	mov r0, #0
 	mov r3, #0
