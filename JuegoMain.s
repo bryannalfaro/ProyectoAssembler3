@@ -38,6 +38,7 @@ opcion: .asciz "  "
 numero: .word 0
 mult: .asciz "%d\n"
 mult2: .asciz "%d-"
+espacio: .asciz "\n"
 mult3: .word 0
 
 /*---------------------------------------------------------*/
@@ -53,7 +54,7 @@ main:
 	/* valor1 */
 
 inicio:
-	mov r10, #3
+	mov r10, #1
 	mov r11, #0
 	mov r9, #4
 	mov r12, #0
@@ -112,6 +113,9 @@ juego:
 	mov r1, r5
 	bl printf
 	
+	b juego2
+	
+	juego2: 
 	@Pedir al usuario su eleccion
 	ldr r0, =eleccion
 	ldr r1, =opcion
@@ -142,31 +146,43 @@ juego:
 	correcto:
 	 ldr r0, =correctoM
 	 bl puts
+	 
+	 bl limpiezaArreglo
+	 
+	 
 	 b salida
 	
 	
 	incorrecto:
+	
 	 ldr r0, =incorrectoM
 	 bl puts
+	 add r10, #1
+	 
+	 cmp r10, #5 @Comprobacion para prevenir loop infinito
+	 bgt salida
 	 
 	 ldr r5, =bancoPalabras
 	 bl impresionPalabra
-	 
-	 b salida
+	 ldr r0, =espacio
+	 bl puts
+	 mov r11, #0
+	 b juego2
 
-/*aqui debe de ir otro ascii para hacer el espacio del juego */
+
+	 b salida
  
 impresionPalabra:
 	push {lr}
 	
-	add r11, r11, #1
+	add r11, r11, #1 @bandera del turno
 	
-	ldr r0, =mult2
+	ldr r0, =mult2 @carga formato
 	mov r1, r11
 	bl printf
 	
 	
-	mov r1, r5
+	mov r1, r5   @moverse dentro del arreglo
 	add r5, r5, #7
 	
 	ldr r0, =eleccion2
@@ -178,7 +194,14 @@ impresionPalabra:
 	
 	pop {lr}
 	mov pc, lr
- 
+
+limpiezaArreglo:
+	push {lr}
+	
+	
+	pop {lr}
+	mov pc, lr
+
 salida:
 	
 	/* salida correcta */
