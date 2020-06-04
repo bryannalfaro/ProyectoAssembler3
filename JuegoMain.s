@@ -17,7 +17,7 @@ primeraParte3: .asciz "   (____)    (__) (__/  (__)  (____)"
 f1: .asciz "_______________________________________________________________________________ "
 f2: .asciz "|                                                                              |"
 f3: .asciz "|  Debes Destruir las palabras completándolas.                                 |"  
-f4: .asciz "|  Selecciona el orden de la palabra seguido de sus caracteres faltantes: 1E  |" 
+f4: .asciz "|  Selecciona el orden de la palabra seguido de sus caracteres faltantes: 1e  |" 
 f5: .asciz "|  Listo para jugar?(Y/N)                                                      |"
 f6: .asciz "_______________________________________________________________________________|"
 
@@ -29,7 +29,7 @@ correctoM: .asciz  "CORRECTO"
 incorrectoM: .asciz  "INCORRECTO"
 perder: .asciz  "HAS PERDIDO"
 ganar: .asciz  "HAS GANADO"
-bancoPalabras: .asciz "pel?ta", "c?rros", "tomat?", "?guana", "p?erta" @palabras del juego
+
 bancoCorrecto: .asciz "o", "a", "e", "i", "u" @caracteres correctos
 formato: .asciz "1-%s\n"
 
@@ -43,6 +43,7 @@ mult2: .asciz "%d-"
 espacio: .asciz "\n"
 espacioVacio: .asciz "      "
 puntos: .word 0
+bancoPalabras: .asciz "pel?ta", "c?rros", "tomat?", "?guana", "p?erta" @palabras del juego
 
 /*---------------------------------------------------------*/
 .text
@@ -61,6 +62,7 @@ inicio:
 	mov r11, #0
 	mov r9, #4
 	mov r12, #0
+	mov r4, #1
 /*-----CARGGA DEL ASCII DIBUJO--------------*/
 	ldr r0, =primeraParte
 	bl puts
@@ -158,21 +160,22 @@ correcto:
 	@mov r12, r5
 	@str r12, [r5]
 	ldr r5, =bancoPalabras
-	mov r10, #1
+	bl operar
 	bl impresionPalabra
 	ldr r0, =espacio
 	bl puts
 	mov r11, #0
-	b juego2	
-	
+	b juego2
+
 incorrecto:
 	
 	ldr r0, =incorrectoM
 	bl puts
-	add r10, #1
-	cmp r10, #5 @Comprobacion para prevenir loop infinito
+	add r4, #1
+	cmp r4, #5 @Comprobacion para prevenir loop infinito
 	bgt salidaPerdio
 	ldr r5, =bancoPalabras
+	bl operar
 	bl impresionPalabra
 	ldr r0, =espacio
 	bl puts
@@ -188,14 +191,16 @@ impresionPalabra:
 
 	ldr r1, [r5]
 	add r5, r5, #7
-	ldr r4, =espacioVacio
-	ldr r4, [r4]
+	ldr r12, =espacioVacio
+	ldr r12, [r12]
 	add r11, r11, #1 @bandera del turno
 	add r10, #1
-	cmp r1, r4
+	add r4, #1
+	cmp r1, r12
 	beq impresionPalabra
 	sub r11, r11, #1
 	sub r10, r10, #1
+	sub r4, #1
 	add r11, r11, #1 @bandera del turno
 	sub r5, r5, #7
 
@@ -208,11 +213,15 @@ impresionPalabra:
 	ldr r0, =eleccion2
 	
 	bl printf
-	
 	sub r12, r10, r11
 	cmp r12, #1
 	bge impresionPalabra
-	
+	pop {lr}
+	mov pc, lr
+
+operar:
+	push {lr}
+	mov r10, r4
 	pop {lr}
 	mov pc, lr
 
