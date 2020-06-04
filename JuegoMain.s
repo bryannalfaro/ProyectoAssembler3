@@ -160,12 +160,11 @@ correcto:
 	@mov r12, r5
 	@str r12, [r5]
 	ldr r5, =bancoPalabras
-	bl operar
+	mov r4, r10
 	bl impresionPalabraC
 	ldr r0, =espacio
 	bl puts
 	mov r11, #0
-	mov r4, #1
 	b juego2
 
 incorrecto:
@@ -173,8 +172,8 @@ incorrecto:
 	ldr r0, =incorrectoM
 	bl puts
 	add r4, #1
-	cmp r4, #5 @Comprobacion para prevenir loop infinito
-	bgt salidaPerdio
+	@cmp r4, #5 @Comprobacion para prevenir loop infinito
+	@bgt salidaPerdio
 	ldr r5, =bancoPalabras
 	bl operar
 	bl impresionPalabraI
@@ -186,21 +185,20 @@ incorrecto:
 impresionPalabraC:
 	push {lr}
 	
-	sub r12, r10, r11
-	cmp r12, #1
-	blt juego2
+	cmp r4, r11 
+	bne palabras
+	beq juego2
 
+palabras:
 	ldr r1, [r5]
 	add r5, r5, #7
 	ldr r12, =espacioVacio
 	ldr r12, [r12]
 	add r11, r11, #1 @bandera del turno
-	add r10, #1
 	add r4, #1
 	cmp r1, r12
 	beq impresionPalabraC
 	sub r11, r11, #1
-	sub r10, r10, #1
 	sub r4, #1
 	add r11, r11, #1 @bandera del turno
 	sub r5, r5, #7
