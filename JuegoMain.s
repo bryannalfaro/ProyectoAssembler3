@@ -153,21 +153,14 @@ correcto:
 	ldr r0, =correctoM
 	bl puts
 	bl limpiezaArreglo
-	@ldr r5, =puntos
-	@ldr r5, [r5]
-	@add r5, r5, #1
-	@cmp r1, #5
-	@beq salidaGano
-	@mov r12, r5
-	@str r12, [r5]
 	ldr r5, =bancoPalabras
 	mov r4, r10
 	bl impresionPalabraC
 	ldr r0, =espacio
 	bl puts
-	mov r11, #0
 	cmp r9, #5
 	bge salidaGano
+	mov r11, #0
 	b juego2
 
 incorrecto:
@@ -175,8 +168,6 @@ incorrecto:
 	ldr r0, =incorrectoM
 	bl puts
 	add r4, #1
-	@cmp r4, #5 @Comprobacion para prevenir loop infinito
-	@bgt salidaPerdio
 	ldr r5, =bancoPalabras
 	bl operar
 	bl impresionPalabraI
@@ -232,6 +223,7 @@ impresionPalabraI:
 	cmp r9, #6
 	bne continue
 	beq outI
+
 continue:
 	add r11, r11, #1 @bandera del turno
 	ldr r0, =mult2 @carga formato
