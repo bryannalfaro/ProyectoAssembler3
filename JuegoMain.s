@@ -17,7 +17,7 @@ primeraParte3: .asciz "   (____)    (__) (__/  (__)  (____)"
 f1: .asciz "_______________________________________________________________________________ "
 f2: .asciz "|                                                                              |"
 f3: .asciz "|  Debes Destruir las palabras completándolas.                                 |"  
-f4: .asciz "|  Selecciona el orden de la palabra seguido de sus caracteres faltantes: 1e  |" 
+f4: .asciz "|  Selecciona el orden de la palabra seguido de sus caracteres faltantes: 1e   |" 
 f5: .asciz "|  Listo para jugar?(Y/N)                                                      |"
 f6: .asciz "_______________________________________________________________________________|"
 
@@ -58,12 +58,13 @@ main:
 	/* valor1 */
 
 inicio:
-	mov r10, #1
-	mov r11, #0
-	mov r9, #0
-	mov r12, #0
-	mov r4, #1
-/*-----CARGGA DEL ASCII DIBUJO--------------*/
+	mov r10, #1 @contador de palabras disponibles
+	mov r11, #0 @Pivote para mostrar arreglo
+	mov r9, #0 @Ganar o perder
+	mov r12, #0 @Multiples usos
+	mov r4, #1 @Pivote
+	
+/*-----CARGA DEL ASCII DIBUJO--------------*/
 	ldr r0, =primeraParte
 	bl puts
 	ldr r0, =primeraParte1
@@ -87,7 +88,7 @@ inicio:
 	ldr r0, =f6
 	bl puts
 /*-------------------------------------------------*/
-
+	@OPCIONES DEL USUARIO PARA JUGAR O NO
 	ldr r0, =ingresoOpcion
 	ldr r1, =opcionElegida
 	bl scanf
@@ -105,12 +106,10 @@ error:
 	ldr r0, =errorMessage
 	bl puts
 	b inicio
-	
-juego:
-	mov r2, #0
 
-	ldr r0, =juegoI
-	bl puts
+/*-------------INICIO DEL JUEGO----------------------------*/
+juego:
+	mov r2, #0 
 	
 	@Mostrar palabra inicial
 	ldr r5, =bancoPalabras
@@ -140,29 +139,31 @@ juego2:
 	mov r7, #2
 	mul r2, r2, r7
 	
-	ldr r6, =bancoCorrecto
+	ldr r6, =bancoCorrecto @Cargar el arreglo con las respuestas correctas
 	ldrb r6, [r6, r2] @Colocando en la letra de acuerdo al numero ingresado
 	
 	cmp r6, r1
 	
-	beq correcto
+	beq correcto 
 	bne incorrecto
-	
+
+@Limpia y muestra arreglo 
 correcto:
 	mov r9, #0
 	ldr r0, =correctoM
 	bl puts
-	bl limpiezaArreglo
+	bl limpiezaArreglo @Ir a la subrutina para limpieza
 	ldr r5, =bancoPalabras
 	mov r4, r10
 	bl impresionPalabraC
-	ldr r0, =espacio
+	ldr r0, =espacio @Salto de linea
 	bl puts
-	cmp r9, #5
+	cmp r9, #5 @Si ya se gasto las 5 palabras
 	bge salidaGano
-	mov r11, #0
+	mov r11, #0 @Para reiniciar pivote
 	b juego2
 
+@Cuando la palabra es incorrecta
 incorrecto:
 	mov r9, #0
 	ldr r0, =incorrectoM
@@ -174,10 +175,12 @@ incorrecto:
 	ldr r0, =espacio
 	bl puts
 	cmp r9, #5
-	bge salidaPerdio
-	mov r11, #0
+	bge salidaPerdio @Mas de 5 incorrectas
+	mov r11, #0 @Para reiniciar el pivote
 	b juego2
- 
+
+@Imprimir las palabras que hacen falta de adivinar
+@Autor: Bryann Alfaro
 impresionPalabraC:
 	push {lr}
 	cmp r9, #5
@@ -217,6 +220,8 @@ outC:
 	pop {lr}
 	mov pc, lr
 
+@Imprime las palabras a adivinar
+@Autor: Bryann Alfaro
 impresionPalabraI:
 	push {lr}
 	add r9, #1
@@ -242,12 +247,16 @@ outI:
 	pop {lr}
 	mov pc, lr
 
+@Mover pivote compartido
+@Autor: Diego Arredondo
 operar:
 	push {lr}
 	mov r10, r4
 	pop {lr}
 	mov pc, lr
 
+@Establece en blanco los bytes de la palabra correcta
+@Autor: Bryann Alfaro
 limpiezaArreglo:
 	push {lr}
 	mov r3, #7
@@ -265,6 +274,7 @@ ciclo:
 	pop {lr}
 	mov pc, lr
 
+/*--------DISTINTAS SALIDAS DEL JUEGO-----------------*/
 salidaPerdio:
 	ldr r0, =perder
 	bl puts
