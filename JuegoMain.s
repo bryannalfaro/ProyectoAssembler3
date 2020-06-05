@@ -180,7 +180,7 @@ incorrecto:
 	b juego2
 
 @Imprimir las palabras que hacen falta de adivinar
-@Autor: Bryann Alfaro
+@Autor: Diego ARREDONDO
 impresionPalabraC:
 	push {lr}
 	cmp r9, #5
